@@ -1,0 +1,58 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+from webdriver_manager.chrome import ChromeDriverManager
+
+import time
+
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument("--incognito")
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
+driver.get("http://15.165.232.220:8090/")
+
+class getFind():
+    def findAttribute(self):
+        selectedAttribute = ["x", "y", "width", "height", "degree"]
+        objectPosition = ["positionX", "positionY", "sizeWidth", "sizeHeight", "rotation"]
+        objectPosList = []
+        selectList = []
+
+        def findObject():
+            while True:
+                time.sleep(5)
+                try:
+                    if driver.find_element(By.CLASS_NAME, "selected"):
+                        elem = driver.find_element(By.CLASS_NAME, "selected")
+                        # boundBox = [e.text for e in driver.find_elements(By.ID, "boundingBox")]
+
+                        for e in objectPosition:
+                            pos1 = driver.find_element(By.ID, e).get_attribute("value")
+                            objectPosList.append(pos1)
+
+                        for i in selectedAttribute:
+                            selectList.append(elem.get_attribute(i))
+
+                        return compact()
+
+                except:
+                    pass
+
+        def compact():
+            if objectPosList == selectList:
+                print("This Obj is Clear")
+            else:
+                print("something wrong")
+
+            for i in objectPosList:
+                del objectPosList[i]
+                del selectList[i]
+
+        findObject()
+
+getFind().findAttribute()
+
+
